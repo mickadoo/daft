@@ -2,7 +2,7 @@
 
 require_once __DIR__ . "/vendor/autoload.php";
 
-const MAX_WORK_DISTANCE_METERS = 3000;
+const MAX_WORK_DISTANCE_METERS = 5000;
 const MAX_PRICE = 900;
 
 const HOST = "http://www.daft.ie/";

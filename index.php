@@ -2,26 +2,31 @@
 
 require_once __DIR__ . "/vendor/autoload.php";
 
-const MAX_WORK_DISTANCE_METERS = 5000;
-const MIN_PRICE = 450;
-const MAX_PRICE = 900;
+const MAX_DISTANCE_METERS = 5000;
+const MIN_PRICE = 250;
+const MAX_PRICE = 500;
 
 const HOST = "http://www.daft.ie/";
-const WORK_LATITUDE = 51.900865;
-const WORK_LONGITUDE = -8.463574;
+const TARGET_LATITUDE = 51.894760;
+const TARGET_LONGITUDE = -8.476485;
 
 require_once 'getLinks.php';
 require_once 'checkNew.php';
 require_once 'sendMail.php';
 
+if (empty(getenv('GMAIL_PASSWORD'))) {
+    throw new \Exception('ENV variable GMAIL_PASSWORD must be set');
+}
+
 $links = [];
 $fiveMinutes = 300;
 $client = new \Goutte\Client();
+
 $path = sprintf(
-    "/cork/residential-property-for-rent/" .
-    "cork-city-centre,cork-city-suburbs,cork-commuter-towns/" .
+    "cork-city/rooms-to-share/" .
+    "cork-city-centre,cork-city-suburbs/" .
     "?s[mnp]=%d&s[mxp]=%d" .
-    "&s[advanced]=1&s[pt_id][0]=1&s[pt_id][1]=2&searchSource=rental",
+    "&s[gender]=male",
     MIN_PRICE,
     MAX_PRICE
 );
@@ -34,7 +39,7 @@ while (true) {
     printf("%sfound %d new links%s", PHP_EOL, count($new), PHP_EOL);
     printf("filtering for distance.");
     filterNew($client, $new);
-    printf("%sfound %d new within %d m of work", PHP_EOL, count($new), MAX_WORK_DISTANCE_METERS);
+    printf("%sfound %d new within %d m of work", PHP_EOL, count($new), MAX_DISTANCE_METERS);
     if (!empty($new)) {
         sendMail($new);
     }

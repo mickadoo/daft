@@ -8,18 +8,17 @@ function filterNew(Client $client, array &$new)
     foreach ($new as $key => $link) {
         $crawler = $client->request('GET', $link);
         $crawler->filter('script')->each(function (Crawler $script) use (&$new, $key) {
-            if (strpos($script->text(), 'longitude') !== false) {
+            if (strpos($script->text(), 'MultiMaps') !== false) {
                 $regex = '/latitude\":\"([-\d\.]*)\",\"longitude\":\"([-\d\.]*)\"/';
                 preg_match($regex, $script->text(), $matches);
                 if (count($matches) !== 3) {
                     unset($new[$key]);
-                }
-
-                list($original, $latitude, $longitude) = $matches;
-                $distance = getDistanceToWork($latitude, $longitude);
-
-                if ($distance > MAX_WORK_DISTANCE_METERS) {
-                    unset($new[$key]);
+                } else {
+                    list($original, $latitude, $longitude) = $matches;
+                    $distance = getDistanceToWork($latitude, $longitude);
+                    if ($distance > MAX_DISTANCE_METERS) {
+                        unset($new[$key]);
+                    }
                 }
             }
         });
@@ -33,8 +32,8 @@ function getDistanceToWork($latitudeFrom, $longitudeFrom)
     // convert from degrees to radians
     $latFrom = deg2rad($latitudeFrom);
     $lonFrom = deg2rad($longitudeFrom);
-    $latTo = deg2rad(WORK_LATITUDE);
-    $lonTo = deg2rad(WORK_LONGITUDE);
+    $latTo = deg2rad(TARGET_LATITUDE);
+    $lonTo = deg2rad(TARGET_LONGITUDE);
 
     $latDelta = $latTo - $latFrom;
     $lonDelta = $lonTo - $lonFrom;

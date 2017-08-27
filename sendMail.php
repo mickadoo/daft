@@ -11,7 +11,7 @@ function sendMail($newLinks)
 
     $mailer = Swift_Mailer::newInstance($transport);
 
-    $message = Swift_Message::newInstance(sprintf('%d New Places in Cork', count($newLinks)))
+    $message = Swift_Message::newInstance(sprintf('%d New Rental Places in Cork', count($newLinks)))
         ->setFrom(array('testymacttesterson@gmail.com' => 'Test Account'))
         ->setTo(array('michaeldevery@gmail.com' => 'Michael Devery'))
         ->setBody(getBody($newLinks), 'text/html');

@@ -4,7 +4,7 @@ require_once __DIR__ . "/vendor/autoload.php";
 
 const MAX_DISTANCE_METERS = 5000;
 const MIN_PRICE = 250;
-const MAX_PRICE = 500;
+const MAX_PRICE = 700;
 
 const HOST = "http://www.daft.ie/";
 const TARGET_LATITUDE = 51.894760;
@@ -23,10 +23,9 @@ $fiveMinutes = 300;
 $client = new \Goutte\Client();
 
 $path = sprintf(
-    "cork-city/rooms-to-share/" .
-    "cork-city-centre,cork-city-suburbs/" .
-    "?s[mnp]=%d&s[mxp]=%d" .
-    "&s[gender]=male",
+    "cork-city/residential-property-for-rent/" .
+    "cork-city-centre,cork-city-suburbs,cork-commuter-towns/" .
+    "?s[mnp]=%d&s[mxp]=%d",
     MIN_PRICE,
     MAX_PRICE
 );
@@ -39,7 +38,7 @@ while (true) {
     printf("%sfound %d new links%s", PHP_EOL, count($new), PHP_EOL);
     printf("filtering for distance.");
     filterNew($client, $new);
-    printf("%sfound %d new within %d m of work", PHP_EOL, count($new), MAX_DISTANCE_METERS);
+    printf("%sfound %d new within %d m of target", PHP_EOL, count($new), MAX_DISTANCE_METERS);
     if (!empty($new)) {
         sendMail($new);
     }
